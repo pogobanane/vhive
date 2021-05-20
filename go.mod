@@ -45,12 +45,12 @@ replace (
 	github.com/ease-lab/vhive/misc => ./misc
 	github.com/ease-lab/vhive/proto => ./proto
 	github.com/ease-lab/vhive/taps => ./taps
-	github.com/firecracker-microvm/firecracker-containerd => github.com/ease-lab/firecracker-containerd v0.0.0-20200804113524-bc259c9e8152
+	github.com/firecracker-microvm/firecracker-containerd => github.com/ease-lab/firecracker-containerd v0.0.0-20210420173340-19dcfc6646df
 	github.com/firecracker-microvm/firecracker-go-sdk => github.com/ease-lab/firecracker-go-sdk v0.20.1-0.20200625102438-8edf287b0123
 )
 
 require (
-	github.com/containerd/containerd v1.3.6
+	github.com/containerd/containerd v1.3.8-0.20200824223617-f99bb2cc4483
 	github.com/ease-lab/vhive/cri v0.0.0-00010101000000-000000000000
 	github.com/ease-lab/vhive/ctriface v0.0.0-00010101000000-000000000000
 	github.com/ease-lab/vhive/examples/protobuf/helloworld v0.0.0-00010101000000-000000000000
