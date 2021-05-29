@@ -45,26 +45,24 @@ replace (
 	github.com/ease-lab/vhive/misc => ./misc
 	github.com/ease-lab/vhive/proto => ./proto
 	github.com/ease-lab/vhive/taps => ./taps
-	github.com/firecracker-microvm/firecracker-containerd => github.com/ease-lab/firecracker-containerd v0.0.0-20210420173340-19dcfc6646df
+	github.com/firecracker-microvm/firecracker-containerd => github.com/ease-lab/firecracker-containerd v0.0.0-20210529101248-e628ce108f12
 	github.com/firecracker-microvm/firecracker-go-sdk => github.com/ease-lab/firecracker-go-sdk v0.20.1-0.20200625102438-8edf287b0123
 )
 
 require (
-	github.com/containerd/containerd v1.3.8-0.20200824223617-f99bb2cc4483
+	github.com/containerd/containerd v1.5.2
 	github.com/ease-lab/vhive/cri v0.0.0-00010101000000-000000000000
 	github.com/ease-lab/vhive/ctriface v0.0.0-00010101000000-000000000000
 	github.com/ease-lab/vhive/examples/protobuf/helloworld v0.0.0-00010101000000-000000000000
 	github.com/ease-lab/vhive/metrics v0.0.0-00010101000000-000000000000
 	github.com/ease-lab/vhive/proto v0.0.0-00010101000000-000000000000
-	github.com/golang/protobuf v1.3.5 // indirect
 	github.com/montanaflynn/stats v0.6.5
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.8.0
 	github.com/stretchr/testify v1.7.0
 	github.com/wcharczuk/go-chart v2.0.1+incompatible
 	golang.org/x/image v0.0.0-20210220032944-ac19c3e999fb // indirect
-	golang.org/x/sync v0.0.0-20200625203802-6e8e738ad208
+	golang.org/x/sync v0.0.0-20201207232520-09787c993a3a
 	gonum.org/v1/plot v0.9.0
-	google.golang.org/grpc v1.33.1
-	k8s.io/cri-api v0.16.16-rc.0 // indirect
+	google.golang.org/grpc v1.34.0
 )

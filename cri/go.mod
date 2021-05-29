@@ -6,7 +6,7 @@ go 1.15
 replace github.com/docker/distribution v2.7.1+incompatible => github.com/docker/distribution v2.7.1-0.20190205005809-0d3efadf0154+incompatible
 
 replace (
-	github.com/firecracker-microvm/firecracker-containerd => github.com/ease-lab/firecracker-containerd v0.0.0-20210420173340-19dcfc6646df
+	github.com/firecracker-microvm/firecracker-containerd => github.com/ease-lab/firecracker-containerd v0.0.0-20210529101248-e628ce108f12
 	github.com/firecracker-microvm/firecracker-go-sdk => github.com/ease-lab/firecracker-go-sdk v0.20.1-0.20200625102438-8edf287b0123
 )
 
@@ -52,7 +52,7 @@ require (
 	github.com/ease-lab/vhive/examples/protobuf/helloworld v0.0.0-00010101000000-000000000000
 	github.com/sirupsen/logrus v1.8.0
 	github.com/stretchr/testify v1.7.0
-	golang.org/x/net v0.0.0-20200707034311-ab3426394381
-	google.golang.org/grpc v1.33.1
-	k8s.io/cri-api v0.0.0-00010101000000-000000000000
+	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110
+	google.golang.org/grpc v1.34.0
+	k8s.io/cri-api v0.20.6
 )
