@@ -61,6 +61,7 @@ var (
 
 func main() {
 	endpointsFile := flag.String("endpointsFile", "endpoints.json", "File with endpoints' metadata")
+	log.Info("foo")
 	rps := flag.Int("rps", 1, "Target requests per second")
 	runDuration := flag.Int("time", 5, "Run the experiment for X seconds")
 	latencyOutputFile := flag.String("latf", "lat.csv", "CSV file for the latency measurements in microseconds")
@@ -132,6 +133,7 @@ func runExperiment(endpoints []endpoint.Endpoint, runDuration, targetRPS int) (r
 		once  sync.Once
 	)
 
+	log.Info("for")
 	for {
 		select {
 		case <-timeout:
@@ -152,6 +154,9 @@ func runExperiment(endpoints []endpoint.Endpoint, runDuration, targetRPS int) (r
 			} else {
 				go invokeServingFunction(&ep)
 			}
+			url := endpoints[issued%len(endpoints)]
+			log.Info("invokeFunction ", url)
+
 			issued++
 		}
 	}
@@ -173,7 +178,8 @@ func SayHello(address, workflowID string) {
 	ctx, cancel := context.WithTimeout(context.Background(), grpcTimeout)
 	defer cancel()
 
-	_, err = c.SayHello(ctx, &HelloRequest{
+	log.Info("hello request ", &HelloRequest{Name: "faas"})
+	out, err := c.SayHello(ctx, &HelloRequest{
 		Name: "faas",
 		VHiveMetadata: vhivemetadata.MakeVHiveMetadata(
 			workflowID,
@@ -181,8 +187,9 @@ func SayHello(address, workflowID string) {
 			time.Now().UTC(),
 		),
 	})
+	log.Info("respone ", out)
 	if err != nil {
-		log.Warnf("Failed to invoke %v, err=%v", address, err)
+		log.Warnf("foo Failed to invoke %v, err=%v", address, err)
 	}
 }
 

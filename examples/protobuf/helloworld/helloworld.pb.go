@@ -289,8 +289,9 @@ func NewGreeterClient(cc grpc.ClientConnInterface) GreeterClient {
 func (c *greeterClient) SayHello(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error) {
 	out := new(HelloReply)
 	err := c.cc.Invoke(ctx, "/helloworld.Greeter/SayHello", in, out, opts...)
+	//log.Info("out", out)
 	if err != nil {
-		return nil, err
+		return out, err
 	}
 	return out, nil
 }
