@@ -44,6 +44,7 @@ var (
 )
 
 func main() {
+	log.Info("foo")
 	urlFile := flag.String("urlFile", "urls.txt", "File with functions' URLs")
 	rps := flag.Int("rps", 1, "Target requests per second")
 	runDuration := flag.Int("time", 5, "Run the benchmark for X seconds")
@@ -85,6 +86,7 @@ func runBenchmark(urls []string, runDuration, targetRPS int) (realRPS float64) {
 	var issued int
 	start := time.Now()
 
+	log.Info("for")
 	for {
 		select {
 		case <-timeout:
@@ -98,6 +100,7 @@ func runBenchmark(urls []string, runDuration, targetRPS int) (realRPS float64) {
 			return
 		case <-tick:
 			url := urls[issued%len(urls)]
+			log.Info("invokeFunction ", url)
 			go invokeFunction(url)
 
 			issued++
@@ -121,9 +124,11 @@ func invokeFunction(url string) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	_, err = c.SayHello(ctx, &pb.HelloRequest{Name: "faas"})
+	log.Info("hello request ", &pb.HelloRequest{Name: "faas"})
+	out, err := c.SayHello(ctx, &pb.HelloRequest{Name: "faas"})
+	log.Info("respone ", out)
 	if err != nil {
-		log.Warnf("Failed to invoke %v, err=%v", address, err)
+		log.Warnf("foo Failed to invoke %v, err=%v", address, err)
 	}
 
 	atomic.AddInt64(&completed, 1)
