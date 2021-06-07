@@ -20,7 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-FROM amd64/golang:1.16.4-alpine3.13 as consumerBuilder
+FROM vhiveease/golang:latest as consumerBuilder
 
 WORKDIR /app
 COPY go.mod /app/go.mod
@@ -30,13 +30,13 @@ RUN go mod download && \
    CGO_ENABLED=0 GOOS=linux go build -v -o /main /app/consumer/consumer.go
 RUN mkdir /log
 
-FROM amd64/golang:1.16.4-alpine3.13 as consumer
+FROM scratch as consumer
 WORKDIR /
 COPY --from=consumerBuilder /main /main
 COPY --from=consumerBuilder /log/ /log/
 ENTRYPOINT [ "/main" ] 
 
-FROM amd64/golang:1.16.4-alpine3.13 as producerBuilder
+FROM vhiveease/golang:latest as producerBuilder
 
 WORKDIR /app
 COPY go.mod /app/go.mod
@@ -46,24 +46,8 @@ RUN go mod download && \
    CGO_ENABLED=0 GOOS=linux go build -v -o /main /app/producer/producer.go
 RUN mkdir /log
 
-FROM amd64/golang:1.16.4-alpine3.13 as producer
+FROM scratch as producer
 WORKDIR /
 COPY --from=producerBuilder /main /main
 COPY --from=producerBuilder /log/ /log/
-ENTRYPOINT [ "/main" ] 
-
-FROM amd64/golang:1.16.4-alpine3.13 as lite-producerBuilder
-
-WORKDIR /app
-COPY go.mod /app/go.mod
-COPY lite-producer/ /app/lite-producer/
-COPY proto/ /app/proto/
-RUN go mod download && \
-   CGO_ENABLED=0 GOOS=linux go build -v -o /main /app/lite-producer/lite-producer.go
-RUN mkdir /log
-
-FROM amd64/golang:1.16.4-alpine3.13 as lite-producer
-WORKDIR /
-COPY --from=lite-producerBuilder /main /main
-COPY --from=lite-producerBuilder /log/ /log/
 ENTRYPOINT [ "/main" ] 

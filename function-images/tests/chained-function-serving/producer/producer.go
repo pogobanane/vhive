@@ -42,6 +42,15 @@ type producerServer struct {
 	pb.UnimplementedClientProducerServer
 }
 
+type producerServerLite struct {
+	pb.UnimplementedClientProducerServer
+}
+
+func (ps *producerServerLite) ProduceStrings(c context.Context, count *pb.ProduceStringsRequest) (*pb.Empty, error) {
+	log.Println("client successful call")
+	return new(pb.Empty), nil
+}
+
 func (ps *producerServer) ProduceStrings(c context.Context, count *pb.ProduceStringsRequest) (*pb.Empty, error) {
 	if count.Value <= 0 {
 		return new(pb.Empty), nil
@@ -88,6 +97,7 @@ func produceStreamStrings(client pb.ProducerConsumerClient, strings []string) {
 }
 
 func main() {
+	lite := flag.Bool("lite", false, "Lite version of producer which does not require consumer")
 	flagAddress := flag.String("addr", "localhost", "Server IP address")
 	flagClientPort := flag.Int("pc", 3030, "Client Port")
 	flagServerPort := flag.Int("ps", 3031, "Server Port")
@@ -129,31 +139,33 @@ func main() {
 	}
 	log.SetOutput(file)
 
-	//client setup
-	log.Printf("[producer] Client using address: %v\n", address)
+	grpcServer := grpc.NewServer()
 
-	conn, err := grpc.Dial(fmt.Sprintf("%v:%v", address, clientPort), grpc.WithInsecure())
-	if err != nil {
-		log.Fatalf("[producer] fail to dial: %s", err)
+	if !(*lite) {
+		//client setup
+		log.Printf("[producer] Client using address: %v\n", address)
+
+		conn, err := grpc.Dial(fmt.Sprintf("%v:%v", address, clientPort), grpc.WithInsecure())
+		if err != nil {
+			log.Fatalf("[producer] fail to dial: %s", err)
+		}
+		defer conn.Close()
+
+		client := pb.NewProducerConsumerClient(conn)
+		s := producerServer{}
+		s.producerClient = client
+		pb.RegisterClientProducerServer(grpcServer, &s)
+
+	} else {
+		s := producerServerLite{}
+		pb.RegisterClientProducerServer(grpcServer, &s)
 	}
-	defer conn.Close()
-
-	client := pb.NewProducerConsumerClient(conn)
-
-	//produceSingleString(client, "hello")
-	//strings := []string{"Hello", "World", "one", "two", "three"}
-	//produceStreamStrings(client, strings)
 
 	//server setup
 	lis, err := net.Listen("tcp", fmt.Sprintf(":%d", serverPort))
 	if err != nil {
 		log.Fatalf("[producer] failed to listen: %v", err)
 	}
-
-	grpcServer := grpc.NewServer()
-	s := producerServer{}
-	s.producerClient = client
-	pb.RegisterClientProducerServer(grpcServer, &s)
 
 	log.Println("[producer] Server Started")
 

@@ -49,8 +49,10 @@ func main() {
 
 	client := pb.NewClientProducerClient(conn)
 	empty, err := client.ProduceStrings(context.Background(), &pb.ProduceStringsRequest{Value: int32(*strings)})
-	fmt.Printf("Client output: %v, %v\n",empty, err)
-
+	fmt.Printf("Client output: %v, %v\n", empty, err)
+	if err != nil {
+		log.Fatalf("Failed to produce strings: %s", err)
+	}
 	fmt.Printf("client closing\n")
 
 }
