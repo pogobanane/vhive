@@ -3357,7 +3357,7 @@ data:
     # max-scale is the cluster-wide default value for the max scale of a revision,
     # unless overridden by the "autoscaling.knative.dev/maxScale" annotation.
     # If set to 0, the revision has no maximum scale.
-    max-scale: "0"
+    max-scale: "32"
 
     # scale-down-delay is the amount of time that must pass at reduced
     # concurrency before a scale down decision is applied. This can be useful,
@@ -3370,7 +3370,7 @@ data:
     # When this is set to a positive value, a revision with a maxScale above that value
     # (including a maxScale of "0" = unlimited) is disallowed.
     # A value of zero (the default) allows any limit, including unlimited.
-    max-scale-limit: "0"
+    max-scale-limit: "32"
 
 ---
 # Copyright 2019 The Knative Authors
