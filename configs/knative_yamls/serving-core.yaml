@@ -974,6 +974,8 @@ metadata:
   annotations:
     knative.dev/example-checksum: "604cb513"
 data:
+  max-scale: "2"
+  max-scale-limit: "2"
   _example: |
     ################################
     #                              #
