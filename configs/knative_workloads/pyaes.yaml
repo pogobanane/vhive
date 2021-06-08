@@ -4,6 +4,9 @@ metadata:
   namespace: default
 spec:
   template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/maxScale: "2"
     spec:
       containers:
         - image: crccheck/hello-world:latest # Stub image. See https://github.com/ease-lab/vhive/issues/68
