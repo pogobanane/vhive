@@ -30,11 +30,11 @@ import (
 
 	"google.golang.org/grpc"
 
-	pb "tests/chained-functions-serving/proto"
+	pb "github.com/ease-lab/vhive/examples/protobuf/helloworld"
 )
 
 func main() {
-	strings := flag.Int("s", 1, "Number of strings to send")
+	//strings := flag.Int("s", 1, "Number of strings to send")
 	address := flag.String("addr", "localhost", "Server IP address")
 	clientPort := flag.Int("pc", 3031, "Client Port")
 	flag.Parse()
@@ -47,8 +47,8 @@ func main() {
 	}
 	defer conn.Close()
 
-	client := pb.NewClientProducerClient(conn)
-	empty, err := client.ProduceStrings(context.Background(), &pb.ProduceStringsRequest{Value: int32(*strings)})
+	client := pb.NewGreeterClient(conn)
+	empty, err := client.SayHello(context.Background(), &pb.HelloRequest{Name: "client"})
 	fmt.Printf("Client output: %v, %v\n", empty, err)
 	if err != nil {
 		log.Fatalf("Failed to produce strings: %s", err)

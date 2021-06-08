@@ -27,73 +27,83 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"math/rand"
 	"net"
 	"os"
 	"strconv"
 
 	"google.golang.org/grpc"
 
-	pb "tests/chained-functions-serving/proto"
+	pb_client "tests/chained-functions-serving/proto"
+
+	pb "github.com/ease-lab/vhive/examples/protobuf/helloworld"
 )
 
 type producerServer struct {
-	producerClient pb.ProducerConsumerClient
-	pb.UnimplementedClientProducerServer
+	producerClient pb_client.ProducerConsumerClient
+	pb.UnimplementedGreeterServer
 }
 
 type producerServerLite struct {
-	pb.UnimplementedClientProducerServer
+	pb.UnimplementedGreeterServer
 }
 
-func (ps *producerServerLite) ProduceStrings(c context.Context, count *pb.ProduceStringsRequest) (*pb.Empty, error) {
-	log.Println("client successful call")
-	return new(pb.Empty), nil
-}
+// func (ps *producerServerLite) ProduceStrings(c context.Context, count *pb.ProduceStringsRequest) (*pb.Empty, error) {
+// 	log.Println("client successful call")
+// 	return new(pb.Empty), nil
+// }
 
-func (ps *producerServer) ProduceStrings(c context.Context, count *pb.ProduceStringsRequest) (*pb.Empty, error) {
-	if count.Value <= 0 {
-		return new(pb.Empty), nil
-	} else if count.Value == 1 {
-		produceSingleString(ps.producerClient, fmt.Sprint(rand.Intn(1000)))
-	} else {
-		wordList := make([]string, int(count.Value))
-		for i := 0; i < int(count.Value); i++ {
-			wordList[i] = fmt.Sprint(rand.Intn(1000))
-		}
-		produceStreamStrings(ps.producerClient, wordList)
-	}
-	return new(pb.Empty), nil
-}
+// func (ps *producerServer) ProduceStrings(c context.Context, count *pb.ProduceStringsRequest) (*pb.Empty, error) {
+// 	if count.Value <= 0 {
+// 		return new(pb.Empty), nil
+// 	} else if count.Value == 1 {
+// 		produceSingleString(ps.producerClient, fmt.Sprint(rand.Intn(1000)))
+// 	} else {
+// 		wordList := make([]string, int(count.Value))
+// 		for i := 0; i < int(count.Value); i++ {
+// 			wordList[i] = fmt.Sprint(rand.Intn(1000))
+// 		}
+// 		produceStreamStrings(ps.producerClient, wordList)
+// 	}
+// 	return new(pb.Empty), nil
+// }
 
-func produceSingleString(client pb.ProducerConsumerClient, s string) {
-	ack, err := client.ConsumeString(context.Background(), &pb.ConsumeStringRequest{Value: s})
+// func produceSingleString(client pb.ProducerConsumerClient, s string) {
+// 	ack, err := client.ConsumeString(context.Background(), &pb.ConsumeStringRequest{Value: s})
+// 	if err != nil {
+// 		log.Fatalf("[producer] client error in string consumption: %s", err)
+// 	}
+// 	log.Printf("[producer] (single) Ack: %v\n", ack.Value)
+// }
+
+// func produceStreamStrings(client pb.ProducerConsumerClient, strings []string) {
+// 	//make stream
+// 	stream, err := client.ConsumeStream(context.Background())
+// 	if err != nil {
+// 		log.Fatalf("[producer] %v.RecordRoute(_) = _, %v", client, err)
+// 	}
+
+// 	//stream strings
+// 	for _, s := range strings {
+// 		if err := stream.Send(&pb.ConsumeStringRequest{Value: s}); err != nil {
+// 			log.Fatalf("[producer] %v.Send(%v) = %v", stream, s, err)
+// 		}
+// 	}
+
+// 	//end transaction
+// 	ack, err := stream.CloseAndRecv()
+// 	if err != nil {
+// 		log.Fatalf("[producer] %v.CloseAndRecv() got error %v, want %v", stream, err, nil)
+// 	}
+// 	log.Printf("[producer] (stream) Ack: %v\n", ack.Value)
+// }
+
+func (ps *producerServer) SayHello(ctx context.Context, req *pb.HelloRequest) (*pb.HelloReply, error) {
+	ack, err := ps.producerClient.ConsumeString(context.Background(), &pb_client.ConsumeStringRequest{Value: "1"})
 	if err != nil {
 		log.Fatalf("[producer] client error in string consumption: %s", err)
 	}
 	log.Printf("[producer] (single) Ack: %v\n", ack.Value)
-}
-
-func produceStreamStrings(client pb.ProducerConsumerClient, strings []string) {
-	//make stream
-	stream, err := client.ConsumeStream(context.Background())
-	if err != nil {
-		log.Fatalf("[producer] %v.RecordRoute(_) = _, %v", client, err)
-	}
-
-	//stream strings
-	for _, s := range strings {
-		if err := stream.Send(&pb.ConsumeStringRequest{Value: s}); err != nil {
-			log.Fatalf("[producer] %v.Send(%v) = %v", stream, s, err)
-		}
-	}
-
-	//end transaction
-	ack, err := stream.CloseAndRecv()
-	if err != nil {
-		log.Fatalf("[producer] %v.CloseAndRecv() got error %v, want %v", stream, err, nil)
-	}
-	log.Printf("[producer] (stream) Ack: %v\n", ack.Value)
+	return &pb.HelloReply{Message: "Success"}, err
 }
 
 func main() {
@@ -151,14 +161,14 @@ func main() {
 		}
 		defer conn.Close()
 
-		client := pb.NewProducerConsumerClient(conn)
+		client := pb_client.NewProducerConsumerClient(conn)
 		s := producerServer{}
 		s.producerClient = client
-		pb.RegisterClientProducerServer(grpcServer, &s)
+		pb.RegisterGreeterServer(grpcServer, &s)
 
 	} else {
 		s := producerServerLite{}
-		pb.RegisterClientProducerServer(grpcServer, &s)
+		pb.RegisterGreeterServer(grpcServer, &s)
 	}
 
 	//server setup
