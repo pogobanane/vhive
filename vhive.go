@@ -148,6 +148,7 @@ type fwdServer struct {
 func foobar(criService *fccdcri.Service) {
 	for true {
 		fmt.Println(criService.PodVMConfigs)
+		fmt.Println(len(criService.PodVMConfigs))
 		time.Sleep(10 * time.Second)
 	}
 }
