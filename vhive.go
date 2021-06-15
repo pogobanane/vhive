@@ -30,6 +30,7 @@ import (
 	"net"
 	"os"
 	"runtime"
+	"time"
 
 	ctrdlog "github.com/containerd/containerd/log"
 	fccdcri "github.com/ease-lab/vhive/cri"
@@ -144,6 +145,13 @@ type fwdServer struct {
 	hpb.UnimplementedFwdGreeterServer
 }
 
+func foobar(criService *fccdcri.Service) {
+	for true {
+		fmt.Println(criService.PodVMConfigs)
+		time.Sleep(10 * time.Second)
+	}
+}
+
 func criServe() {
 	lis, err := net.Listen("unix", *criSock)
 	if err != nil {
@@ -158,6 +166,8 @@ func criServe() {
 	}
 
 	criService.Register(s)
+
+	go foobar(criService)
 
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
