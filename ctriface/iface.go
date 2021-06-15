@@ -78,6 +78,7 @@ func (o *Orchestrator) StartVM(ctx context.Context, vmID, imageName string) (_ *
 
 	logger := log.WithFields(log.Fields{"vmID": vmID, "image": imageName})
 	logger.Debug("StartVM: Received StartVM")
+	logger.Debug("penis")
 
 	vm, err := o.vmPool.Allocate(vmID, o.hostIface)
 	if err != nil {
@@ -219,7 +220,8 @@ func (o *Orchestrator) StartVM(ctx context.Context, vmID, imageName string) (_ *
 		}
 	}
 
-	logger.Debug("Successfully started a VM")
+	logger.Debug("penis")
+	logger.Debug(fmt.Sprintf("Successfully started a VM: %s", vm.Ni.PrimaryAddress))
 
 	return &StartVMResponse{GuestIP: vm.Ni.PrimaryAddress}, startVMMetric, nil
 }
@@ -227,6 +229,7 @@ func (o *Orchestrator) StartVM(ctx context.Context, vmID, imageName string) (_ *
 // StopSingleVM Shuts down a VM
 // Note: VMs are not quisced before being stopped
 func (o *Orchestrator) StopSingleVM(ctx context.Context, vmID string) error {
+	time.Sleep(1000 * time.Second)
 	logger := log.WithFields(log.Fields{"vmID": vmID})
 	logger.Debug("Orchestrator received StopVM")
 

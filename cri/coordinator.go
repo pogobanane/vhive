@@ -169,6 +169,7 @@ func (c *coordinator) orchStartVM(ctx context.Context, image string) (*funcInsta
 	ctxTimeout, cancel := context.WithTimeout(ctx, time.Second*40)
 	defer cancel()
 
+	logger.Debug("penis orchStartVM")
 	if !c.withoutOrchestrator {
 		resp, _, err = c.orch.StartVM(ctxTimeout, vmID, image)
 		if err != nil {
