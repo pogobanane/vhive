@@ -55,7 +55,7 @@ type Service struct {
 	coordinator        *coordinator
 
 	// to store mapping from pod to guest image and port temporarily
-	podVMConfigs map[string]*VMConfig
+	PodVMConfigs map[string]*VMConfig
 }
 
 // VMConfig wraps the IP and port of the guest VM
@@ -87,7 +87,7 @@ func NewService(orch *ctriface.Orchestrator) (*Service, error) {
 		stockRuntimeClient: stockRuntimeClient,
 		stockImageClient:   stockImageClient,
 		coordinator:        newCoordinator(orch),
-		podVMConfigs:       make(map[string]*VMConfig),
+		PodVMConfigs:       make(map[string]*VMConfig),
 	}
 
 	return cs, nil
@@ -139,21 +139,21 @@ func (s *Service) insertPodVMConfig(podID string, vmConfig *VMConfig) {
 	s.Lock()
 	defer s.Unlock()
 
-	s.podVMConfigs[podID] = vmConfig
+	s.PodVMConfigs[podID] = vmConfig
 }
 
 func (s *Service) removePodVMConfig(podID string) {
 	s.Lock()
 	defer s.Unlock()
 
-	delete(s.podVMConfigs, podID)
+	delete(s.PodVMConfigs, podID)
 }
 
 func (s *Service) getPodVMConfig(podID string) (*VMConfig, error) {
 	s.Lock()
 	defer s.Unlock()
 
-	vmConfig, isPresent := s.podVMConfigs[podID]
+	vmConfig, isPresent := s.PodVMConfigs[podID]
 	if !isPresent {
 		log.Errorf("VM config for pod %s does not exist", podID)
 		return nil, errors.New("VM config for pod does not exist")
