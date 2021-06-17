@@ -99,6 +99,7 @@ func (c *coordinator) setIdleInstance(fi *funcInstance) {
 }
 
 func (c *coordinator) startVM(ctx context.Context, image string) (*funcInstance, error) {
+	log.Debug("startVM")
 	if fi := c.getIdleInstance(image); c.orch != nil && c.orch.GetSnapshotsEnabled() && fi != nil {
 		err := c.orchLoadInstance(ctx, fi)
 		return fi, err

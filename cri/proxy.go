@@ -24,9 +24,11 @@ package cri
 
 import (
 	"context"
+	//"time"
 
 	log "github.com/sirupsen/logrus"
 	criapi "k8s.io/cri-api/pkg/apis/runtime/v1alpha2"
+	//status "google.golang.org/grpc/status"
 )
 
 // RunPodSandbox creates and starts a pod-level sandbox. Runtimes must ensure
@@ -53,6 +55,7 @@ func (s *Service) PodSandboxStatus(ctx context.Context, r *criapi.PodSandboxStat
 // reclaims network resources (e.g., IP addresses) allocated to the sandbox.
 func (s *Service) StopPodSandbox(ctx context.Context, r *criapi.StopPodSandboxRequest) (*criapi.StopPodSandboxResponse, error) {
 	log.Debugf("StopPodSandbox for %q", r.GetPodSandboxId())
+	//time.Sleep(120 * time.Second) // this succ. delays stop container by 1min. Do the same for other stops as well: StopPodSandbox, RemoveContainer
 	return s.stockRuntimeClient.StopPodSandbox(ctx, r)
 }
 
@@ -60,6 +63,7 @@ func (s *Service) StopPodSandbox(ctx context.Context, r *criapi.StopPodSandboxRe
 // in the sandbox, they must be forcibly terminated and removed.
 func (s *Service) RemovePodSandbox(ctx context.Context, r *criapi.RemovePodSandboxRequest) (*criapi.RemovePodSandboxResponse, error) {
 	log.Debugf("RemovePodSandbox for %q", r.GetPodSandboxId())
+	//time.Sleep(120 * time.Second) // this succ. delays stop container by 1min. Do the same for other stops as well: StopPodSandbox, RemoveContainer
 	return s.stockRuntimeClient.RemovePodSandbox(ctx, r)
 
 }
@@ -92,7 +96,10 @@ func (s *Service) ContainerStatus(ctx context.Context, r *criapi.ContainerStatus
 
 // StopContainer stops a running container with a grace period (i.e., timeout).
 func (s *Service) StopContainer(ctx context.Context, r *criapi.StopContainerRequest) (*criapi.StopContainerResponse, error) {
-	log.Debugf("StopContainer for %q with timeout %d (s)", r.GetContainerId(), r.GetTimeout())
+	// nope this timeout does not prevent container destruction.
+	log.Debugf("StopContainer for %q with timeout %d (s)", r.GetContainerId(), r.GetTimeout() + 99999)
+	//time.Sleep(120 * time.Second) // this succ. delays stop container by 1min. Do the same for other stops as well: StopPodSandbox, RemoveContainer
+	log.Debug("StopContainer slept")
 	return s.stockRuntimeClient.StopContainer(ctx, r)
 }
 
