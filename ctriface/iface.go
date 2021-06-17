@@ -78,7 +78,6 @@ func (o *Orchestrator) StartVM(ctx context.Context, vmID, imageName string) (_ *
 
 	logger := log.WithFields(log.Fields{"vmID": vmID, "image": imageName})
 	logger.Debug("StartVM: Received StartVM")
-	logger.Debug("penis")
 
 	vm, err := o.vmPool.Allocate(vmID, o.hostIface)
 	if err != nil {
@@ -218,7 +217,6 @@ func (o *Orchestrator) StartVM(ctx context.Context, vmID, imageName string) (_ *
 		}
 	}
 
-	logger.Debug("penis")
 	logger.Debug(fmt.Sprintf("Successfully started a VM: %s", vm.Ni.PrimaryAddress))
 
 	return &StartVMResponse{GuestIP: vm.Ni.PrimaryAddress}, startVMMetric, nil

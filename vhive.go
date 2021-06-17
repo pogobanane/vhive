@@ -145,10 +145,16 @@ type fwdServer struct {
 	hpb.UnimplementedFwdGreeterServer
 }
 
+func debgprint(criService *fccdcri.Service) {
+	fmt.Println("foobar")
+	log.Debug("foobar Debug")
+	fmt.Println(criService.PodVMConfigs)
+	fmt.Println(len(criService.PodVMConfigs))
+}
+
 func foobar(criService *fccdcri.Service) {
 	for true {
-		fmt.Println(criService.PodVMConfigs)
-		fmt.Println(len(criService.PodVMConfigs))
+		debgprint(criService)
 		time.Sleep(10 * time.Second)
 	}
 }
