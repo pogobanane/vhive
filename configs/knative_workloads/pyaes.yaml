@@ -6,8 +6,8 @@ spec:
   template:
     metadata:
       annotations:
-        autoscaling.knative.dev/maxScale: "2"
-        autoscaling.knative.dev/minScale: "2"
+        autoscaling.knative.dev/maxScale: "1"
+        #autoscaling.knative.dev/minScale: "2"
     spec:
       containers:
         - image: crccheck/hello-world:latest # Stub image. See https://github.com/ease-lab/vhive/issues/68
