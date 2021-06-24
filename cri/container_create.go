@@ -98,6 +98,8 @@ func (s *Service) createUserContainer(ctx context.Context, r *criapi.CreateConta
 		return nil, err
 	}
 
+	logger := log.WithFields(log.Fields{"user-containerID": stockResp.ContainerId, "vmID": funcInst.vmID})
+	logger.Debugf("UserContainerInfo")
 	return stockResp, stockErr
 }
 
