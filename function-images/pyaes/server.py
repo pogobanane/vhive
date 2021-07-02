@@ -23,6 +23,7 @@ responses = ["record_response", "replay_response"]
 class Greeter(helloworld_pb2_grpc.GreeterServicer):
 
     def SayHello(self, request, context):
+        logging.error("testing logging2")
         aes = pyaes.AESModeOfOperationCTR(KEY)
 
         if request.name == "record":
@@ -43,6 +44,7 @@ def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=1))
     helloworld_pb2_grpc.add_GreeterServicer_to_server(Greeter(), server)
     server.add_insecure_port('[::]:50051')
+    logging.error("testing logging")
     server.start()
     server.wait_for_termination()
 
