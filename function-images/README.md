@@ -14,6 +14,14 @@ bash docker_build.sh image1 image2 image3
 Some workloads (with `_s3` postfix in the folder name) require a [MinIO](min.io), which is an open source S3-compatible object store, server
 deployed on the same host. We provide a set of scripts for MinIO setup in the `minio_scripts` folder.
 
+## Developing individual functions
+
+```
+sudo docker login
+sudo docker build -t DOCKERUSERNAME/REPOSITORY:TAG .
+sudo docker push DOCKERUSERNAME/REPOSITORY:TAG
+vim vhive/configs/knative_workloads/*.yaml
+```
 
 ### Credits
 
