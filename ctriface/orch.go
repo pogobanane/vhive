@@ -28,6 +28,7 @@ import (
 	"path/filepath"
 	"syscall"
 	"time"
+	"strings"
 
 	log "github.com/sirupsen/logrus"
 
@@ -52,10 +53,28 @@ const (
 	namespaceName          = "firecracker-containerd"
 )
 
+type WorkloadIoWriter struct {
+	logger *log.Entry
+}
+
+func NewWorkloadIoWriter(vmID string) WorkloadIoWriter {
+	return WorkloadIoWriter {log.WithFields(log.Fields{"vmID": vmID})}
+}
+
+func (wio WorkloadIoWriter) Write(p []byte) (n int, err error) {
+	s := string(p)
+	lines := strings.Split(s, "\n")
+	for i := range lines {
+		wio.logger.Info(string(lines[i]))
+	}
+	return len(p), nil
+}
+
 // Orchestrator Drives all VMs
 type Orchestrator struct {
 	vmPool       *misc.VMPool
 	cachedImages map[string]containerd.Image
+	workloadIo   map[string]WorkloadIoWriter // vmId -> Writer
 	snapshotter  string
 	client       *containerd.Client
 	fcClient     *fcclient.Client
@@ -77,6 +96,7 @@ func NewOrchestrator(snapshotter, hostIface string, opts ...OrchestratorOption) 
 	o := new(Orchestrator)
 	o.vmPool = misc.NewVMPool()
 	o.cachedImages = make(map[string]containerd.Image)
+	o.workloadIo = make(map[string]WorkloadIoWriter)
 	o.snapshotter = snapshotter
 	o.snapshotsDir = "/fccd/snapshots"
 	o.hostIface = hostIface
