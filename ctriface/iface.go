@@ -145,10 +145,11 @@ func (o *Orchestrator) StartVM(ctx context.Context, vmID, imageName string) (_ *
 		}
 	}()
 
-	o.workloadIo[vmID] = NewWorkloadIoWriter(vmID)
+	iologger := NewWorkloadIoWriter(vmID)
+	o.workloadIo.Store(vmID, &iologger)
 	logger.Debug("StartVM: Creating a new task")
 	tStart = time.Now()
-	task, err := container.NewTask(ctx, cio.NewCreator(cio.WithStreams(os.Stdin, o.workloadIo[vmID], o.workloadIo[vmID])))
+	task, err := container.NewTask(ctx, cio.NewCreator(cio.WithStreams(os.Stdin, iologger, iologger)))
 	startVMMetric.MetricMap[metrics.NewTask] = metrics.ToUS(time.Since(tStart))
 	vm.Task = &task
 	if err != nil {
@@ -273,7 +274,7 @@ func (o *Orchestrator) StopSingleVM(ctx context.Context, vmID string) error {
 		return err
 	}
 
-	delete(o.workloadIo, vmID)
+	o.workloadIo.Delete(vmID)
 
 	logger.Debug("Stopped VM successfully")
 
@@ -416,8 +417,6 @@ func (o *Orchestrator) StopActiveVMs() error {
 	o.fcClient.Close()
 	log.Info("Closing containerd client")
 	o.client.Close()
-
-	o.workloadIo = make(map[string]WorkloadIoWriter)
 
 	return nil
 }

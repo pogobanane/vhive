@@ -29,6 +29,7 @@ import (
 	"syscall"
 	"time"
 	"strings"
+	"sync"
 
 	log "github.com/sirupsen/logrus"
 
@@ -74,7 +75,7 @@ func (wio WorkloadIoWriter) Write(p []byte) (n int, err error) {
 type Orchestrator struct {
 	vmPool       *misc.VMPool
 	cachedImages map[string]containerd.Image
-	workloadIo   map[string]WorkloadIoWriter // vmId -> Writer
+	workloadIo   sync.Map // vmID string -> WorkloadIoWriter
 	snapshotter  string
 	client       *containerd.Client
 	fcClient     *fcclient.Client
@@ -96,7 +97,6 @@ func NewOrchestrator(snapshotter, hostIface string, opts ...OrchestratorOption) 
 	o := new(Orchestrator)
 	o.vmPool = misc.NewVMPool()
 	o.cachedImages = make(map[string]containerd.Image)
-	o.workloadIo = make(map[string]WorkloadIoWriter)
 	o.snapshotter = snapshotter
 	o.snapshotsDir = "/fccd/snapshots"
 	o.hostIface = hostIface
