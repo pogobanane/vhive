@@ -59,7 +59,7 @@ type WorkloadIoWriter struct {
 }
 
 func NewWorkloadIoWriter(vmID string) WorkloadIoWriter {
-	return WorkloadIoWriter {log.WithFields(log.Fields{"vmID": vmID})}
+	return WorkloadIoWriter {log.WithFields(log.Fields{"vmID": vmID, "foobar": "foo"})}
 }
 
 func (wio WorkloadIoWriter) Write(p []byte) (n int, err error) {
