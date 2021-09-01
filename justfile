@@ -9,6 +9,11 @@ make:
     go mod vendor
     go install ./...
 
+    pushd examples/registry
+    go mod vendor
+    go install ./...
+    popd
+
     pushd examples/invoker
     go mod vendor
     go install ./...
