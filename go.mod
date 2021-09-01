@@ -53,7 +53,7 @@ require (
 	github.com/firecracker-microvm/firecracker-containerd v0.0.0-00010101000000-000000000000
 	github.com/ftrvxmtrx/fd v0.0.0-20150925145434-c6d800382fff
 	github.com/go-multierror/multierror v1.0.2
-	github.com/gogo/googleapis v1.4.0
+	github.com/gogo/googleapis v1.4.0 // indirect
 	github.com/golang/protobuf v1.4.3
 	github.com/montanaflynn/stats v0.6.5
 	github.com/pkg/errors v0.9.1
