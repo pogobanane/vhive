@@ -14,6 +14,10 @@
             "name": "rnn-serving",
             "file": "rnn_serving.yaml",
             "count": 3
+        },{
+            "name": "hellooopsie",
+            "file": "hellooopsie.yaml",
+            "count": 1
         }
     ]
 }
