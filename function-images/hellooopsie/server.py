@@ -1,6 +1,8 @@
 from concurrent import futures
 import logging
 import random
+import time
+import threading
 
 import grpc
 
@@ -34,14 +36,29 @@ class Greeter(helloworld_pb2_grpc.GreeterServicer):
         return helloworld_pb2.HelloReply(message=msg)
 
 
+class PeriodicError(threading.Thread):
+    def __init__(self):
+        threading.Thread.__init__(self)
+
+    def run(self):
+        time.sleep(1);
+        while True:
+            print("ERROR: some periodic error", flush=True);
+            time.sleep(10);
+
+
 def serve():
+    errors = PeriodicError()
+    errors.start()
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=1))
     helloworld_pb2_grpc.add_GreeterServicer_to_server(Greeter(), server)
     server.add_insecure_port('[::]:50051')
     server.start()
     server.wait_for_termination()
+    errors.join()
 
 
 if __name__ == '__main__':
+    print("ERROR: some virtual startup error", flush=True);
     logging.basicConfig()
     serve()
